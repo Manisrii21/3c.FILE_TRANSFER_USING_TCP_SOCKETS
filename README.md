@@ -1,40 +1,63 @@
-# 3a.CREATION FOR ECHO CLIENT AND ECHO SERVER USING TCP SOCKETS
-# AIM
-To write a python program for creating Echo Client and Echo Server using TCP
-Sockets Links.
+# 3c.CREATION FOR FILE TRANSFER USING TCP SOCKETS
+## AIM
+To write a python program for creating File Transfer using TCP Sockets Links
 ## ALGORITHM:
-1. Import the necessary modules in python
-2. Create a socket connection to using the socket module.
-3. Send message to the client and receive the message from the client using the Socket module in
- server .
-4. Send and receive the message using the send function in socket.
+1. Import the necessary python modules.
+2. Create a socket connection using socket module.
+3. Send the message to write into the file to the client file.
+4. Open the file and then send it to the client in byte format.
+5. In the client side receive the file from server and then write the content into it.
 ## PROGRAM
 ### CLIENT
 ```
-import socket
-s=socket.socket()
-s.connect(('localhost',8000))
-while True:
- msg=input("Client > ")
- s.send(msg.encode())
- print("Server > ",s.recv(1024).decode())
+import socket 
+s = socket.socket() 
+host = socket.gethostname() 
+port = 60000 
+s.connect((host, port)) 
+s.send("Hello server!".encode()) 
+with open('received_file', 'wb') as f: 
+    while True: 
+        print('receiving data...') 
+        data = s.recv(1024) 
+        print('data=%s', (data)) 
+        if not data: 
+            break 
+        f.write(data) 
+f.close() 
+print('Successfully get the file') 
+s.close() 
+print('connection closed')
 ```
 ### SERVER
 ```
-import socket
-s=socket.socket()
-s.bind(('localhost',8000))
-s.listen(5)
-c,addr=s.accept()
-while True:
- ClientMessage=c.recv(1024).decode()
- c.send(ClientMessage.encode())
+import socket                    
+port = 60000                    
+s = socket.socket()              
+host = socket.gethostname()      
+s.bind((host, port))
+s.listen(5)                      
+while True: 
+    conn, addr = s.accept()      
+    data = conn.recv(1024) 
+    print('Server received', repr(data)) 
+    filename='mytext.txt' 
+    f = open(filename,'rb') 
+    l = f.read(1024) 
+    while (l): 
+       conn.send(l) 
+       print('Sent ',repr(l)) 
+       l = f.read(1024) 
+    f.close() 
+    print('Done sending') 
+    conn.send('Thank you for connecting'.encode()) 
+    conn.close()
 ```
 ## OUPUT
 ### CLIENT
-![image](https://github.com/Manisrii21/3c.FILE_TRANSFER_USING_TCP_SOCKETS/assets/147140163/9d49b190-f9d6-47b8-9d10-4e3fb3eecab2)
+![image](https://github.com/Manisrii21/3c.FILE_TRANSFER_USING_TCP_SOCKETS/assets/147140163/1423f0e9-e5cb-4843-8ab8-cc2eea42dba8)
 ### SERVER
-![image](https://github.com/Manisrii21/3c.FILE_TRANSFER_USING_TCP_SOCKETS/assets/147140163/e1003784-b68f-44b7-9545-f3d92184f9b8)
+![image](https://github.com/Manisrii21/3c.FILE_TRANSFER_USING_TCP_SOCKETS/assets/147140163/c26944e9-6c8f-4321-9296-1fe83c5dbbbb)
 ## RESULT
-Thus, the python program for creating Echo Client and Echo Server using TCP Sockets Links 
-was successfully created and executed.
+Thus, the python program for creating File Transfer using TCP Sockets Links was 
+successfully created and executed.
